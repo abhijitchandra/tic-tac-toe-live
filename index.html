@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tic-Tac-Toe LIVE — Play With a Friend, Anywhere</title>
+<meta name="description" content="Tic-Tac-Toe LIVE: play tic-tac-toe in real time with a friend anywhere, peer-to-peer, no signup.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Kalam:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./src/css/styles.css">
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+</head>
+<body>
+<div class="stage">
+  <div class="card">
+    <h1>Tic-Tac-Toe <span class="live-word">LIVE</span></h1>
+    <p class="tagline">play in real time with a friend, wherever you both are</p>
+
+    <div id="lobby">
+      <button class="btn-primary" id="createBtn" style="width:100%;">Start a new page</button>
+      <div class="divider">or</div>
+      <div class="join-row">
+        <input type="text" id="joinCode" placeholder="ROOM CODE" maxlength="6">
+        <button class="btn-ghost" id="joinBtn">Join</button>
+      </div>
+      <p class="footnote" id="lobbyMsg"></p>
+    </div>
+
+    <div id="game">
+      <div class="top-bar">
+        <div class="room-tag" id="roomTagText" title="Click to copy">----</div>
+        <div class="you-tag" id="youTag"></div>
+      </div>
+      <div class="status-line" id="statusLine"></div>
+
+      <div class="board-wrap" id="boardWrap">
+        <svg class="grid-svg" viewBox="0 0 300 300">
+          <path class="grid-line l1" d="M 101 12 C 98 90, 104 200, 100 288" />
+          <path class="grid-line l2" d="M 201 10 C 204 100, 197 210, 200 290" />
+          <path class="grid-line l3" d="M 14 101 C 90 98, 200 104, 288 99" />
+          <path class="grid-line l4" d="M 12 201 C 100 198, 210 205, 288 200" />
+        </svg>
+        <div class="cells" id="cells"></div>
+        <svg class="win-line" id="winLine" viewBox="0 0 300 300"></svg>
+        <svg class="confetti" id="confetti" viewBox="0 0 300 380"></svg>
+      </div>
+
+      <div class="controls">
+        <button class="btn-ghost" id="newGameBtn">New game</button>
+        <button class="btn-ghost" id="leaveBtn">Leave page</button>
+      </div>
+      <p class="footnote"><span class="badge" id="liveBadge"></span><span id="syncMsg">connecting…</span></p>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="./src/js/app.js"></script>
+</body>
+</html>
