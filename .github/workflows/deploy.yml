@@ -20,11 +20,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: 'npm'
       - run: npm install
       - run: npm run lint
       - run: npm test
+      - name: Build site
+        run: npm run build   # ensure this produces ./build or ./dist
 
   deploy:
     needs: build-and-test
@@ -37,7 +39,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: 'build'      # change to your actual output folder (e.g. dist)
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
