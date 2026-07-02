@@ -8,6 +8,7 @@
     "test:watch": "vitest",
     "lint": "eslint src tests",
     "format": "prettier --write .",
+    "build": "echo 'Static site — no build step needed'",
     "serve": "npx serve ."
   },
   "devDependencies": {
