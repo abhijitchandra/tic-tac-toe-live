@@ -122,13 +122,22 @@ function handleData(msg) {
 
 function setupConnection(c) {
   conn = c;
-  conn.on('open', () => {
+  const handleOpen = () => {
     opponentConnected = true;
     liveBadge.className = 'badge live';
     syncMsg.textContent = 'connected — moves sync instantly';
     if (isHost) send({ type: 'sync', board, turn, winner, line });
     applyState(false);
-  });
+  };
+  // The joiner reaches this function *after* their connection's 'open'
+  // event already fired once (that's what triggered showing the game
+  // screen in the first place) — so a second 'open' listener would never
+  // fire. Handle the already-open case directly instead of re-listening.
+  if (conn.open) {
+    handleOpen();
+  } else {
+    conn.on('open', handleOpen);
+  }
   conn.on('data', handleData);
   conn.on('close', () => {
     opponentConnected = false;
@@ -175,7 +184,15 @@ $('joinBtn').addEventListener('click', () => {
       showGame(code);
       setupConnection(c);
     },
-    onFail: () => { $('lobbyMsg').textContent = `Couldn't reach room "${code}". Check the code and try again.`; },
+    onFail: () => {
+      const msg = `Couldn't reach room "${code}". Check the code and try again.`;
+      if (game.style.display === 'block') {
+        liveBadge.className = 'badge err';
+        syncMsg.textContent = msg;
+      } else {
+        $('lobbyMsg').textContent = msg;
+      }
+    },
   });
 });
 
