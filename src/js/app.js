@@ -6,6 +6,26 @@ const lobby = $('lobby'), game = $('game');
 const cellsEl = $('cells'), winLineEl = $('winLine'), confettiEl = $('confetti');
 const statusLine = $('statusLine'), roomTagText = $('roomTagText'), youTag = $('youTag');
 const syncMsg = $('syncMsg'), liveBadge = $('liveBadge');
+const themeToggle = $('themeToggle'), copyLinkBtn = $('copyLinkBtn');
+
+// ---------- Theme ----------
+function applyTheme(theme) {
+  document.body.classList.toggle('dark-mode', theme === 'dark');
+  themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+  themeToggle.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+}
+function initTheme() {
+  const saved = localStorage.getItem('ttt-theme');
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+}
+themeToggle.addEventListener('click', () => {
+  const isDark = document.body.classList.contains('dark-mode');
+  const next = isDark ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem('ttt-theme', next);
+});
+initTheme();
 
 let peer = null, conn = null, isHost = false, myMark = null, roomCode = null;
 let board = Array(9).fill(null), turn = 'X', winner = null, line = null;
@@ -157,6 +177,9 @@ function showGame(code) {
   lobby.style.display = 'none';
   game.style.display = 'block';
   buildCells();
+  const url = new URL(window.location.href);
+  url.searchParams.set('room', code);
+  window.history.replaceState({}, '', url);
 }
 
 $('createBtn').addEventListener('click', () => {
@@ -174,8 +197,7 @@ $('createBtn').addEventListener('click', () => {
   });
 });
 
-$('joinBtn').addEventListener('click', () => {
-  const code = $('joinCode').value.trim().toUpperCase();
+function attemptJoin(code) {
   if (!code) { $('lobbyMsg').textContent = 'Type a room code first.'; return; }
   $('lobbyMsg').textContent = 'Connecting…';
   peer = joinRoom(code, {
@@ -194,6 +216,10 @@ $('joinBtn').addEventListener('click', () => {
       }
     },
   });
+}
+
+$('joinBtn').addEventListener('click', () => {
+  attemptJoin($('joinCode').value.trim().toUpperCase());
 });
 
 $('joinCode').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('joinBtn').click(); });
@@ -203,6 +229,18 @@ roomTagText.addEventListener('click', () => {
     navigator.clipboard && navigator.clipboard.writeText(roomCode).catch(() => {});
     syncMsg.textContent = 'room code copied';
   }
+});
+
+copyLinkBtn.addEventListener('click', () => {
+  if (!roomCode) return;
+  const url = new URL(window.location.href);
+  url.searchParams.set('room', roomCode);
+  navigator.clipboard && navigator.clipboard.writeText(url.toString()).catch(() => {});
+  const original = syncMsg.textContent;
+  syncMsg.textContent = 'invite link copied — send it to your friend';
+  setTimeout(() => {
+    if (syncMsg.textContent === 'invite link copied — send it to your friend') syncMsg.textContent = original;
+  }, 2500);
 });
 
 $('newGameBtn').addEventListener('click', () => {
@@ -222,4 +260,17 @@ $('leaveBtn').addEventListener('click', () => {
   game.style.display = 'none';
   lobby.style.display = 'block';
   $('joinCode').value = ''; $('lobbyMsg').textContent = '';
+  const url = new URL(window.location.href);
+  url.searchParams.delete('room');
+  window.history.replaceState({}, '', url);
 });
+
+// ---------- Auto-join from a shared invite link (?room=CODE) ----------
+(function autoJoinFromLink() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('room');
+  if (code) {
+    $('joinCode').value = code.toUpperCase();
+    attemptJoin(code.toUpperCase());
+  }
+})();

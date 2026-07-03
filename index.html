@@ -11,6 +11,7 @@
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </head>
 <body>
+<button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
 <div class="stage">
   <div class="card">
     <h1>Tic-Tac-Toe <span class="live-word">LIVE</span></h1>
@@ -28,7 +29,10 @@
 
     <div id="game">
       <div class="top-bar">
-        <div class="room-tag" id="roomTagText" title="Click to copy">----</div>
+        <div class="invite-row">
+          <div class="room-tag" id="roomTagText" title="Click to copy code">----</div>
+          <button class="icon-btn" id="copyLinkBtn" title="Copy invite link">🔗</button>
+        </div>
         <div class="you-tag" id="youTag"></div>
       </div>
       <div class="status-line" id="statusLine"></div>

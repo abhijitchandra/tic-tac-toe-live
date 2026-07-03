@@ -7,17 +7,56 @@
   --text: #2B2A24;
   --text-soft: #6b6656;
   --card-shadow: 0 20px 50px rgba(43,42,36,0.18), 0 2px 0 rgba(0,0,0,0.03);
+  --paper-glow: #fffdf6;
+}
+body.dark-mode{
+  --paper: #1B2028;
+  --paper-line: rgba(255,255,255,0.07);
+  --ink-navy: #E4E9F7;
+  --ink-coral: #FF9270;
+  --gold: #E3C069;
+  --text: #EDEAE0;
+  --text-soft: #9A9686;
+  --card-shadow: 0 20px 50px rgba(0,0,0,0.45), 0 2px 0 rgba(255,255,255,0.02);
+  --paper-glow: #232A35;
 }
 *{box-sizing:border-box;}
 html,body{height:100%;}
 body{
   margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
   background:
-    radial-gradient(circle at 20% 10%, #fffdf6 0%, transparent 40%),
+    radial-gradient(circle at 20% 10%, var(--paper-glow) 0%, transparent 40%),
     repeating-linear-gradient(0deg, transparent, transparent 27px, var(--paper-line) 28px),
     var(--paper);
   font-family:'Inter', sans-serif; color:var(--text); padding:24px;
+  transition: background-color 0.35s ease, color 0.35s ease;
 }
+.card, .room-tag, button, input[type=text]{ transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
+
+.theme-toggle{
+  position: fixed;
+  top: 18px; right: 18px;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 2px solid var(--paper-line);
+  background: rgba(255,255,255,0.5);
+  display:flex; align-items:center; justify-content:center;
+  font-size: 1.1rem;
+  padding: 0;
+  z-index: 10;
+}
+body.dark-mode .theme-toggle{ background: rgba(255,255,255,0.06); }
+.theme-toggle:hover{ transform: scale(1.06); }
+.theme-toggle:active{ transform: scale(0.94); }
+
+.invite-row{ display:flex; align-items:center; gap:8px; }
+.icon-btn{
+  width:34px; height:34px; border-radius:8px; padding:0;
+  display:flex; align-items:center; justify-content:center;
+  background: transparent; border:2px solid var(--paper-line); color:var(--ink-navy);
+  font-size:0.95rem;
+}
+.icon-btn:hover{ border-color: var(--gold); }
 .stage{ width:100%; max-width:460px; }
 .card{
   background: rgba(255,253,246,0.55); border-radius:18px; padding:28px 26px 30px;
